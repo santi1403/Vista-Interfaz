@@ -13,6 +13,7 @@
   "type": "commonjs",
   "dependencies": {
     "electron": "^44.1.1",
+    "mssql": "^12.7.2",
     "mysql2": "^3.24.2"
   }
 }
