@@ -1,21 +1,22 @@
 // server-sql.js - Servidor Node para SQL Server CAJAIMPORTADOS\SQLINTERFAZ (sin tocar interfaz)
-// Ejecutar: npm install mssql && node server-sql.js  -> http://localhost:8000
+// Ejecutar: npm install msnodesqlv8 && node server-sql.js  -> http://localhost:8000
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
 let sql;
-try { sql = require('mssql'); } catch(e){ console.log('Falta mssql. Ejecuta: npm install mssql'); process.exit(1); }
+try { sql = require('mssql/msnodesqlv8'); } catch(e){ console.log('Falta msnodesqlv8. Ejecuta: npm install msnodesqlv8'); process.exit(1); }
 
+// Conexion por Windows Auth (Trusted_Connection = usuario Windows del proceso).
+// La instancia SQLINTERFAZ tiene TCP/IP deshabilitado: se conecta por memoria compartida/named pipes.
+// Si prefieres login sa: reinstala 'mssql' y usa user/password (con TCP/IP habilitado en la instancia).
 const DB = {
   server: 'CAJAIMPORTADOS\\SQLINTERFAZ',
   database: 'gestion_clientes',
-  user: 'sa',
-  password: 'Grup0IVK1*', // misma de ConfiguracionInstalacion.Cfg, cambia si tu sa tiene otra
+  connectionString: 'Driver={SQL Server Native Client 11.0};Server=CAJAIMPORTADOS\\SQLINTERFAZ;Database=gestion_clientes;Trusted_Connection=Yes;',
   options: { encrypt: false, trustServerCertificate: true, enableArithAbort: true },
   pool: { max: 10, min: 0 }
 };
-// Si usas Windows Auth sin password, comenta user/password y usa: options: { trustedConnection: true }
 
 const docConfig = {
   'CC':  {label:'Cédula de Ciudadanía', tipo:'numeric', min:6, max:10},
@@ -56,8 +57,12 @@ async function handleApi(req,res,parsed){
 
       if(req.method==='GET' && (action==='list' || action==='')){
         const estado=parsed.query.estado||'todos';
-        let q='SELECT * FROM clientes'; if(estado==='activo'||estado==='suspendido') q+=' WHERE estado=\''+estado+'\''; q+=' ORDER BY id DESC';
-        const r=await p.request().query(q);
+        let q='SELECT * FROM clientes';
+        if(estado==='activo'||estado==='suspendido'){ q+=' WHERE estado=@estado'; }
+        q+=' ORDER BY id DESC';
+        const req=p.request();
+        if(estado==='activo'||estado==='suspendido') req.input('estado', sql.VarChar, estado);
+        const r=await req.query(q);
         let rows=r.recordset;
         for(let c of rows){
           const em=await p.request().input('id', sql.Int, c.id).query('SELECT email FROM cliente_emails WHERE cliente_id=@id');
@@ -110,7 +115,6 @@ const server=http.createServer((req,res)=>{
   const parsed=url.parse(req.url,true);
   const pathname=parsed.pathname;
   if(pathname.startsWith('/api') || pathname==='/api.php') return handleApi(req,res,parsed);
-  if(pathname==='/api.php') return handleApi(req,res,parsed);
   let filePath=path.join(ROOT, pathname==='/'?'index.html':pathname);
   if(!filePath.startsWith(ROOT)) { res.writeHead(403); return res.end(); }
   fs.readFile(filePath,(err,data)=>{ if(err){ res.writeHead(404); return res.end('Not found'); } const ext=path.extname(filePath); res.writeHead(200,{'Content-Type':mime[ext]||'text/plain'}); res.end(data); });

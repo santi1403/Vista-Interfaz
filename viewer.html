@@ -17,7 +17,7 @@
   <div class="card-header">
     <div class="header-left">
       <h1>Vista Clientes - Datos en Tiempo Real</h1>
-      <p>Fuente: /api/api.php?action=list · Solo lectura · No modifica tu interfaz</p>
+      <p>Fuente: /api/lista · Solo lectura · No modifica tu interfaz</p>
     </div>
     <a href="index.html" class="btn-volver" style="text-decoration:none">← Volver a interfaz</a>
   </div>
@@ -44,6 +44,9 @@
   </div>
 </div>
 <script>
+function esc(s){
+  return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
 async function cargar(){
   const info=document.getElementById('viewerInfo');
   const tbody=document.getElementById('tbodyViewer');
@@ -59,20 +62,20 @@ async function cargar(){
     }
     tbody.innerHTML=data.map(c=>`
       <tr>
-        <td><strong>${c.num_cliente||c.numCliente||'—'}</strong></td>
-        <td><strong>${c.nombre||''} ${c.apellido||''}</strong><br><span style="font-size:11px;color:#64748b">${c.direccion||'—'}</span></td>
-        <td><span class="badge">${c.identificacion||'—'}</span></td>
-        <td><span class="badge">${c.tipo_id||c.tipoCliente||'—'}</span></td>
-        <td>${c.telefono||'—'}</td>
-        <td>${c.pais||'—'}</td>
-        <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${(c.emails||[]).join(', ')}">${(c.emails||[]).join(', ')||'—'}</td>
-        <td>${c.check_id ? `<span class="badge badge-check">${c.check_id}</span>` : '<span style="color:#94a3b8">—</span>'}</td>
-        <td><span class="badge ${c.estado==='suspendido'?'suspendido':'activo'}">${c.estado||'activo'}</span></td>
+        <td><strong>${esc(c.num_cliente||c.numCliente||'—')}</strong></td>
+        <td><strong>${esc(c.nombre||'')} ${esc(c.apellido||'')}</strong><br><span style="font-size:11px;color:#64748b">${esc(c.direccion)||'—'}</span></td>
+        <td><span class="badge">${esc(c.identificacion)||'—'}</span></td>
+        <td><span class="badge">${esc(c.tipo_id||c.tipoCliente)||'—'}</span></td>
+        <td>${esc(c.telefono)||'—'}</td>
+        <td>${esc(c.pais)||'—'}</td>
+        <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${esc((c.emails||[]).join(', '))}">${esc((c.emails||[]).join(', '))||'—'}</td>
+        <td>${c.check_id ? `<span class="badge badge-check">${esc(c.check_id)}</span>` : '<span style="color:#94a3b8">—</span>'}</td>
+        <td><span class="badge ${c.estado==='suspendido'?'suspendido':'activo'}">${esc(c.estado)||'activo'}</span></td>
       </tr>
     `).join('');
   }catch(e){
     info.textContent='Error al cargar';
-    tbody.innerHTML=`<tr><td colspan="9"><div class="empty-state"><div class="big">⚠️</div>${e.message}<br>Verifica que MySQL y el servidor PHP estén activos</div></td></tr>`;
+    tbody.innerHTML=`<tr><td colspan="9"><div class="empty-state"><div class="big">⚠️</div>${esc(e.message)}<br>Verifica que el servidor SQL (server-sql.js) esté activo</div></td></tr>`;
   }
 }
 cargar();

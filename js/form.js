@@ -1,6 +1,6 @@
 // js/form.js - Lógica del formulario
 import { estado } from './config.js';
-import { toast } from './utils.js';
+import { toast, esc } from './utils.js';
 
 export function recolectarDatos(){
   const emailList = document.getElementById('emailList');
@@ -69,20 +69,35 @@ export function cargarEnFormulario(c, {emailList, identificacion, showVista, toa
   if(c.emails && c.emails.length){
     c.emails.forEach((mail,i)=>{
       const row=document.createElement('div'); row.className='email-row';
-      if(i===0) row.innerHTML=`<input type="email" class="email-input" value="${mail}"><button type="button" class="btn-add-email" id="btnAddEmailNew">+ Agregar</button>`;
-      else row.innerHTML=`<input type="email" class="email-input" value="${mail}"><button type="button" class="btn-remove-email">✕</button>`;
+      if(i===0) row.innerHTML=`<input type="email" class="email-input" value="${esc(mail)}"><button type="button" class="btn-add-email" id="btnAddEmailNew">+ Agregar</button>`;
+      else row.innerHTML=`<input type="email" class="email-input" value="${esc(mail)}"><button type="button" class="btn-remove-email">✕</button>`;
       emailList.appendChild(row);
     });
-    emailList.querySelectorAll('.btn-remove-email').forEach(btn=> btn.addEventListener('click', (e)=>{ e.target.closest('.email-row').remove(); }));
+    emailList.querySelectorAll('.btn-remove-email').forEach(btn=> btn.addEventListener('click', (e)=>{ e.target.closest('.email-row').remove(); if(emailList.querySelectorAll('.email-input').length===0) addFieldEmpty(); }));
     const addBtn=document.getElementById('btnAddEmailNew');
     if(addBtn) addBtn.addEventListener('click', ()=>{
       const { addEmailField } = window._formHelpers || {};
       if(addEmailField) addEmailField();
     });
     emailList.querySelectorAll('.email-input').forEach(inp=> inp.addEventListener('focus', e=> estado.lastFocused=e.target));
+  } else {
+    addFieldEmpty();
   }
   if(showVista) showVista('form');
   if(toast) toast(`Cliente ${c.nombre} cargado en formulario`,'info');
+}
+
+function addFieldEmpty(){
+  const emailList = document.getElementById('emailList');
+  const row=document.createElement('div'); row.className='email-row';
+  row.innerHTML=`<input type="email" class="email-input" placeholder="correo@ejemplo.com"><button type="button" class="btn-add-email" id="btnAddEmailNew">+ Agregar</button>`;
+  row.querySelector('.email-input').addEventListener('focus', e=> estado.lastFocused=e.target);
+  const addBtn=row.querySelector('#btnAddEmailNew');
+  addBtn.addEventListener('click', ()=>{
+    const { addEmailField } = window._formHelpers || {};
+    if(addEmailField) addEmailField();
+  });
+  emailList.appendChild(row);
 }
 
 export function autocompletarPorIdentificacion({identificacion, emailList, toast, validarIdentificacion}){
@@ -109,14 +124,16 @@ export function autocompletarPorIdentificacion({identificacion, emailList, toast
     if(c.emails && c.emails.length){
       c.emails.forEach((mail,i)=>{
         const row=document.createElement('div'); row.className='email-row';
-        if(i===0) row.innerHTML=`<input type="email" class="email-input" value="${mail}"><button type="button" class="btn-add-email" id="btnAddEmailNew">+ Agregar</button>`;
-        else row.innerHTML=`<input type="email" class="email-input" value="${mail}"><button type="button" class="btn-remove-email">✕</button>`;
+        if(i===0) row.innerHTML=`<input type="email" class="email-input" value="${esc(mail)}"><button type="button" class="btn-add-email" id="btnAddEmailNew">+ Agregar</button>`;
+        else row.innerHTML=`<input type="email" class="email-input" value="${esc(mail)}"><button type="button" class="btn-remove-email">✕</button>`;
         emailList.appendChild(row);
       });
-      emailList.querySelectorAll('.btn-remove-email').forEach(btn=> btn.addEventListener('click', (e)=>{ e.target.closest('.email-row').remove(); }));
+      emailList.querySelectorAll('.btn-remove-email').forEach(btn=> btn.addEventListener('click', (e)=>{ e.target.closest('.email-row').remove(); if(emailList.querySelectorAll('.email-input').length===0) addFieldEmpty(); }));
       const addBtn=document.getElementById('btnAddEmailNew');
       if(addBtn) addBtn.addEventListener('click', ()=>{ const { addEmailField } = window._formHelpers || {}; if(addEmailField) addEmailField(); });
       emailList.querySelectorAll('.email-input').forEach(inp=> inp.addEventListener('focus', e=> estado.lastFocused=e.target));
+    } else {
+      addFieldEmpty();
     }
     estado.seleccionadoId = c.id;
     estado.editandoId = c.id;

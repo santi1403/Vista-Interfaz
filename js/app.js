@@ -1,6 +1,6 @@
 // js/app.js - Punto de entrada principal (orquestador)
-import { estado, docConfig } from './config.js';
-import { toast, showModal } from './utils.js';
+import { estado, docConfig, porPagina } from './config.js';
+import { toast, showModal, esc } from './utils.js';
 import { validarIdentificacion, getDocCfg, sanitizarDocumento, actualizarAtributosDocumento, initValidation } from './validation.js';
 import { initKeyboard } from './keyboard.js';
 import { sincronizarDesdeAPI, apiCrear, apiActualizar, apiBorrar, apiReactivar } from './api.js';
@@ -9,6 +9,8 @@ import { showVista, renderBuscar, renderActualizar } from './views.js';
 
 // Exponer globales para compatibilidad con onclick inline
 window._estado = estado;
+window.toast = toast;
+window.showModal = showModal;
 window.showVista = showVista;
 window.renderBuscar = renderBuscar;
 window.renderActualizar = renderActualizar;
@@ -94,14 +96,20 @@ identificacion.addEventListener('input', ()=>{
       if(c.emails && c.emails.length){
         c.emails.forEach((mail,i)=>{
           const row=document.createElement('div'); row.className='email-row';
-          if(i===0) row.innerHTML=`<input type="email" class="email-input" value="${mail}"><button type="button" class="btn-add-email" id="btnAddEmailNew">+ Agregar</button>`;
-          else row.innerHTML=`<input type="email" class="email-input" value="${mail}"><button type="button" class="btn-remove-email">✕</button>`;
+          if(i===0) row.innerHTML=`<input type="email" class="email-input" value="${esc(mail)}"><button type="button" class="btn-add-email" id="btnAddEmailNew">+ Agregar</button>`;
+          else row.innerHTML=`<input type="email" class="email-input" value="${esc(mail)}"><button type="button" class="btn-remove-email">✕</button>`;
           emailList.appendChild(row);
         });
-        emailList.querySelectorAll('.btn-remove-email').forEach(btn=> btn.addEventListener('click', (e)=>{ e.target.closest('.email-row').remove(); }));
+        emailList.querySelectorAll('.btn-remove-email').forEach(btn=> btn.addEventListener('click', (e)=>{ e.target.closest('.email-row').remove(); if(emailList.querySelectorAll('.email-input').length===0) addEmailField(); }));
         const addBtn=document.getElementById('btnAddEmailNew');
         if(addBtn) addBtn.addEventListener('click', ()=> addEmailField());
         emailList.querySelectorAll('.email-input').forEach(inp=> inp.addEventListener('focus', e=> estado.lastFocused=e.target));
+      } else {
+        const row=document.createElement('div'); row.className='email-row';
+        row.innerHTML=`<input type="email" class="email-input" placeholder="correo@ejemplo.com"><button type="button" class="btn-add-email" id="btnAddEmailNew">+ Agregar</button>`;
+        row.querySelector('.email-input').addEventListener('focus', e=> estado.lastFocused=e.target);
+        row.querySelector('.btn-add-email').addEventListener('click', ()=> addEmailField());
+        emailList.appendChild(row);
       }
       estado.seleccionadoId=c.id;
       estado.editandoId=c.id;
@@ -181,8 +189,8 @@ function initBotonesPrincipales(){
       const datosCrear=recolectarDatos();
       if(estado.usandoAPI){
         const res = await apiCrear(datosCrear);
-        if(res.ok){ toast(`✓ Cliente ${datosCrear.nombre} ${datosCrear.apellido} guardado en MySQL (#${res.numCliente})`,'success'); await sincronizarDesdeAPI({renderBuscar, renderActualizar}); }
-        else toast(res.error||'Error al crear en MySQL','error');
+        if(res.ok){ toast(`✓ Cliente ${datosCrear.nombre} ${datosCrear.apellido} guardado en SQL Server (#${res.numCliente})`,'success'); await sincronizarDesdeAPI({renderBuscar, renderActualizar}); }
+        else toast(res.error||'Error al crear en el servidor','error');
       } else {
         if(estado.clientes.some(c=>c.identificacion===datosCrear.identificacion)){ toast('Ya existe un cliente con esa identificación — usa otra','error'); break; }
         const nuevo={...datosCrear, id: Date.now(), numCliente: datosCrear.numCliente || String(estado.clientes.length+1).padStart(4,'0'), estado:'activo'};
@@ -227,7 +235,7 @@ function initBotonesPrincipales(){
       const datosG=recolectarDatos();
       if(estado.usandoAPI){
         const res = await apiCrear(datosG);
-        if(res.ok){ toast(`✓ Cliente ${datosG.nombre} ${datosG.apellido} guardado en MySQL (#${res.numCliente})`,'success'); await sincronizarDesdeAPI({renderBuscar, renderActualizar}); }
+        if(res.ok){ toast(`✓ Cliente ${datosG.nombre} ${datosG.apellido} guardado en SQL Server (#${res.numCliente})`,'success'); await sincronizarDesdeAPI({renderBuscar, renderActualizar}); }
         else toast(res.error||'Error','error');
       } else {
         if(estado.clientes.some(c=>c.identificacion===datosG.identificacion)){ toast('Ya existe un cliente con esa identificación','error'); break; }

@@ -12,7 +12,7 @@ export const docConfig = {
 
 export const API_URL = (() => {
   // Si se abre como file:// (Visual Studio preview) usar la IP del servidor para que comparta la misma BD MySQL que las paginas http
-  if (location.protocol === 'file:') return 'http://192.168.10.129:8000/api/api.php';
+  if (location.protocol === 'file:') return 'http://192.168.10.111:8000/api/api.php';
   return 'api/api.php';
 })();
 export const porPagina = 5;
