@@ -1,0 +1,9 @@
+C:\Users\Jefe-Sistemas\Documents\interfaz 2\simphony\dll\obj\Release\GestionClientes.csproj.AssemblyReference.cache
+C:\Users\Jefe-Sistemas\Documents\interfaz 2\simphony\dll\obj\Release\GestionClientes.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Jefe-Sistemas\Documents\interfaz 2\simphony\dll\obj\Release\GestionClientes.csproj.CoreCompileInputs.cache
+C:\Users\Jefe-Sistemas\Documents\interfaz 2\simphony\dll\obj\Release\GestionClientes.sourcelink.json
+C:\Users\Jefe-Sistemas\Documents\interfaz 2\simphony\dll\bin\Release\url.txt
+C:\Users\Jefe-Sistemas\Documents\interfaz 2\simphony\dll\bin\Release\GestionClientes.dll
+C:\Users\Jefe-Sistemas\Documents\interfaz 2\simphony\dll\bin\Release\GestionClientes.pdb
+C:\Users\Jefe-Sistemas\Documents\interfaz 2\simphony\dll\obj\Release\GestionClientes.dll
+C:\Users\Jefe-Sistemas\Documents\interfaz 2\simphony\dll\obj\Release\GestionClientes.pdb

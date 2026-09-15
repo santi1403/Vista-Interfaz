@@ -27,6 +27,18 @@ export async function apiReactivar(id){
   const r = await fetch(`${API_URL}?id=${id}`, {method:'PATCH'});
   return r.json();
 }
+export async function apiVincular(checkId, usuarioId, extra={}){
+  const r = await fetch(`${API_URL}?action=vincular`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({check_id: checkId, usuario_id: usuarioId, ...extra})
+  });
+  return r.json();
+}
+export async function apiPorCheck(checkId){
+  const r = await fetch(`${API_URL}?action=porCheck&check_id=${encodeURIComponent(checkId)}`);
+  return r.json();
+}
 
 export async function sincronizarDesdeAPI(renderers){
   const data = await apiList('todos');
@@ -40,8 +52,8 @@ export async function sincronizarDesdeAPI(renderers){
       // renderSeleccionar ya no existe, pero por compatibilidad
       if(renderers.renderSeleccionar) renderers.renderSeleccionar();
     }
-    toast('Conectado a MySQL — datos reales cargados','success');
+    toast('Estación conectada — clientes cargados','success');
   } else {
-    toast('Modo local (sin servidor) — inicia php -S localhost:8000 para guardar en MySQL','info');
+    toast('Sin API — inicia ESTACION.bat','info');
   }
 }

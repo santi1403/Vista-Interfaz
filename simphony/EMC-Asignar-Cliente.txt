@@ -1,0 +1,84 @@
+BOTON POS "Asignar cliente" — Oracle Simphony (EMC)
+=====================================================
+
+RECOMENDADO: usa la DLL .NET (el JS no lo cargo el POS).
+  Ver: simphony\dll\EMC-DLL.txt
+  Proyecto: simphony\dll\GestionClientes.csproj
+
+
+El cajero, con la cuenta ABIERTA y al ir a CERRAR:
+  pulsa  Asignar cliente
+  → se abre esta app con el check ya puesto
+  → busca o crea el cliente
+  → pulsa  Usar en cuenta
+  → se guarda:  check  ↔  cliente_id
+    (el Id de empleado del POS se anota solo como dato; la factura usa el cliente)
+
+Antes de probar el boton, en la estacion debe estar corriendo ESTACION.bat
+(servidor en http://127.0.0.1:8000).
+
+
+1) EXTENSION APPLICATION
+------------------------
+EMC → Setup → Extension Application  (Enterprise o Property)
+
+  Nombre:     GestionClientes
+  Host Type:  OPS   (no Android)
+
+Insert Application Content:
+  Content Type:  JavaScript
+  Zoneable Key:  asignarCliente   (o Main / marcar como Main)
+  Host Type:     OPS
+  Pegar TODO el archivo:  simphony/asignarCliente.js
+
+Guardar. No uses Distribute; deja que CAL lleve el contenido.
+
+
+2) BOTON EN LA PANTALLA DE COBRO
+--------------------------------
+EMC → Configuration → Page Design
+Abre la pagina de PAGO / CIERRE de esa estacion (no la de comanda).
+
+Boton nuevo:
+  Texto:      Asignar cliente
+  Function:   Run Extensibility App
+  Argument:   GestionClientes:asignarCliente
+
+NO uses Sim Inquire: en este POS pide '1:1' (SIM) y no ejecuta el DLL.
+
+Asigna esa Page Design a la workstation. Save.
+
+
+3) CAL Y REINICIO
+-----------------
+En la estacion: CAL Update (o espera el ciclo).
+Cierra ServiceHost / POS y vuelve a abrir.
+
+Opcional en  ...\ServiceHost\web.config.txt  de la estacion:
+  GestionClientesUrl=http://127.0.0.1:8000
+
+
+4) PRUEBA
+---------
+1. ESTACION.bat en marcha.
+2. En Simphony: abre un check, ve a cerrar.
+3. Pulsa Asignar cliente.
+4. Debe abrir la app con el check ya lleno (no se teclea).
+5. Crea o busca cliente → Usar en cuenta.
+6. El dialogo se cierra. El vinculo queda en data/store.json
+
+Si no hay check abierto, el POS muestra:
+  "Abra una cuenta (check) antes de asignar cliente."
+
+
+5) IDENTIFICADOR DEL CHECK
+--------------------------
+Se guarda el texto del check (CheckNumberText, ej. HPL000019389)
+y el numero interno, para que Harmony encuentre el mismo al facturar.
+
+Si Harmony manda otro id (GUID), el script tambien lo envia como &guid=
+
+
+Referencia Oracle:
+  https://docs.oracle.com/en/industries/food-beverage/simphony/19.8/simjs/index.html
+  Boton SIM Inquire →  extAppName:functionName[:arg1]

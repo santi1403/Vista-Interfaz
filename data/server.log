@@ -1,0 +1,49 @@
+﻿2026-09-14 15:51:26 prefix http://127.0.0.1:8000/
+2026-09-14 15:51:26 prefix http://localhost:8000/
+2026-09-14 15:51:26 prefix http://192.168.10.201:8000/
+2026-09-14 15:51:26 prefix http://172.31.48.1:8000/
+2026-09-14 15:51:26 start fail Excepción al llamar a "Start" con los argumentos "0": "Acceso denegado"
+2026-09-14 15:53:24 start fail Excepción al llamar a ".ctor" con los argumentos "1": "Intento de acceso a un socket no permitido por sus permisos de acceso"
+2026-09-14 15:53:57 started
+2026-09-14 15:54:25 req error No se encuentra ninguna sobrecarga para "Contains" y el número de argumentos "1".
+2026-09-14 15:54:25 req error No se encuentra ninguna sobrecarga para "Contains" y el número de argumentos "1".
+2026-09-14 15:54:25 req error No se encuentra ninguna sobrecarga para "Contains" y el número de argumentos "1".
+2026-09-14 15:55:04 started
+2026-09-14 15:55:13 req error Excepción al llamar a "Serialize" con los argumentos "1": "Se detectó una referencia circular al serializar un objeto de tipo 'System.Management.Automation.PSParameterizedProperty'."
+2026-09-14 15:55:13 req error Excepción al llamar a "Serialize" con los argumentos "1": "Se detectó una referencia circular al serializar un objeto de tipo 'System.Management.Automation.PSParameterizedProperty'."
+2026-09-14 15:55:14 req error Excepción al llamar a "Serialize" con los argumentos "1": "Se detectó una referencia circular al serializar un objeto de tipo 'System.Management.Automation.PSParameterizedProperty'."
+2026-09-14 15:55:14 req error No se puede indizar en una matriz nula.
+2026-09-14 15:57:35 started
+2026-09-14 15:57:44 req error Excepción al llamar a "Serialize" con los argumentos "1": "Se detectó una referencia circular al serializar un objeto de tipo 'System.Management.Automation.PSParameterizedProperty'." @ En C:\Users\Jefe-Sistemas\Documents\interfaz 2\server.ps1: 435 Carácter: 3
++   Send-Text $ctx $code 'application/json; charset=utf-8' ($ser.Serial ...
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2026-09-14 15:57:44 req error No se puede indizar en una matriz nula. @ En C:\Users\Jefe-Sistemas\Documents\interfaz 2\server.ps1: 468 Carácter: 3
++   $action = As-Str $qs['action']
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2026-09-14 16:00:24 started
+2026-09-14 16:00:37 req error Excepción al llamar a "Serialize" con los argumentos "1": "Se detectó una referencia circular al serializar un objeto de tipo 'System.Management.Automation.PSParameterizedProperty'." @ En C:\Users\Jefe-Sistemas\Documents\interfaz 2\server.ps1: 447 Carácter: 3
++   Send-Text $ctx $code 'application/json; charset=utf-8' ($ser.Serial ...
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2026-09-14 16:00:38 req error Excepción al llamar a "Serialize" con los argumentos "1": "Se detectó una referencia circular al serializar un objeto de tipo 'System.Management.Automation.PSParameterizedProperty'." @ En C:\Users\Jefe-Sistemas\Documents\interfaz 2\server.ps1: 447 Carácter: 3
++   Send-Text $ctx $code 'application/json; charset=utf-8' ($ser.Serial ...
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2026-09-14 16:00:38 req error Excepción al llamar a "Serialize" con los argumentos "1": "Se detectó una referencia circular al serializar un objeto de tipo 'System.Management.Automation.PSParameterizedProperty'." @ En C:\Users\Jefe-Sistemas\Documents\interfaz 2\server.ps1: 447 Carácter: 3
++   Send-Text $ctx $code 'application/json; charset=utf-8' ($ser.Serial ...
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2026-09-14 16:00:38 req error Excepción al llamar a "Serialize" con los argumentos "1": "Se detectó una referencia circular al serializar un objeto de tipo 'System.Management.Automation.PSParameterizedProperty'." @ En C:\Users\Jefe-Sistemas\Documents\interfaz 2\server.ps1: 312 Carácter: 3
++   $json = $ser.Serialize($store)
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2026-09-14 16:02:13 started
+2026-09-14 16:02:19 req error Excepción al llamar a "Serialize" con los argumentos "1": "Se detectó una referencia circular al serializar un objeto de tipo 'System.Management.Automation.PSParameterizedProperty'." @ En C:\Users\Jefe-Sistemas\Documents\interfaz 2\server.ps1: 430 Carácter: 3
++   Send-Text $ctx $code 'application/json; charset=utf-8' ($ser.Serial ...
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2026-09-14 16:02:19 req error Excepción al llamar a "Serialize" con los argumentos "1": "Se detectó una referencia circular al serializar un objeto de tipo 'System.Management.Automation.PSParameterizedProperty'." @ En C:\Users\Jefe-Sistemas\Documents\interfaz 2\server.ps1: 430 Carácter: 3
++   Send-Text $ctx $code 'application/json; charset=utf-8' ($ser.Serial ...
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2026-09-14 16:02:19 req error Excepción al llamar a "Serialize" con los argumentos "1": "Se detectó una referencia circular al serializar un objeto de tipo 'System.Management.Automation.PSParameterizedProperty'." @ En C:\Users\Jefe-Sistemas\Documents\interfaz 2\server.ps1: 293 Carácter: 3
++   $json = $ser.Serialize($store)
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2026-09-14 16:02:19 req error Excepción al llamar a "Serialize" con los argumentos "1": "Se detectó una referencia circular al serializar un objeto de tipo 'System.Management.Automation.PSParameterizedProperty'." @ En C:\Users\Jefe-Sistemas\Documents\interfaz 2\server.ps1: 430 Carácter: 3
++   Send-Text $ctx $code 'application/json; charset=utf-8' ($ser.Serial ...
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2026-09-14 16:02:58 started

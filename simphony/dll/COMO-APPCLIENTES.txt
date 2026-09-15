@@ -1,0 +1,61 @@
+COPIAR EL PATRON DE AppClientes (el que SI funciona)
+====================================================
+
+Boton "Datos de Cliente" que funciona:
+  Function:   Sim Inquire
+  Arguments:  AppClientes:10
+
+Eso NO es el nombre del metodo C#. Es:
+  NombreDeLaApp : numeroDeInquireSIM
+
+AppClientes en EMC tiene 3 contents:
+  1) AppClientes.dll     Host Type = None    (el DLL)
+  2) SimCliente .slx     Host Type = None    Main SIM (4000...)
+  3) SimCustom  .isl     Host Type = None
+
+GestionClientes debe verse IGUAL (dos contents, Host Type None):
+
+
+A) Extension Application Name = GestionClientes
+   (mismo property que la caja, o Enterprise Inherited como AppClientes)
+
+
+B) Content 1 — el DLL
+   Zoneable Key:     GestionClientes
+   Disk File Name:   GestionClientes.dll
+   Importa:          bin\Release\GestionClientes.dll
+   Host Type:        0 - None          << igual que AppClientes.dll
+   Main SIM:         NO
+   Do not load DLL:  NO
+
+
+C) Content 2 — el SIM (imprescindible para :10)
+   Zoneable Key:     SimCliente          (o GestionClientesSim)
+   Disk File Name:   GestionClientes.isl
+   Importa:          simphony\dll\GestionClientes.isl
+   Content Type:     SIM / ISL (el mismo tipo que Prn64Configuracion.isl)
+   Host Type:        0 - None
+   Option Bits:      2 - Main SIM Content   MARCADO  (como SimCliente / 4000...)
+
+   El .isl actual NO llama al DLL: abre el navegador con el check.
+   Para probar el boton basta el .isl (ver SIM-NAVEGADOR.txt).
+   El DLL / JavaScript no hacen falta en esta prueba.
+
+
+D) Quita el content Javascript si sigue ahi.
+
+
+E) Boton Page Design (copia Datos de Cliente):
+   Function:    Sim Inquire
+   Arguments:   GestionClientes:10
+
+   NO pongas asignarCliente. El 10 es el inquire del .isl.
+
+
+F) Reload Database + CAL + reiniciar ServiceHost.
+   ESTACION.bat encendido.
+
+
+Si quieres REEMPLAZAR Datos de Cliente (no un boton nuevo):
+  deja Function Sim Inquire
+  cambia Arguments de AppClientes:10  a  GestionClientes:10

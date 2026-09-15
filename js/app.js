@@ -1,9 +1,9 @@
 // js/app.js - Punto de entrada principal (orquestador)
-import { estado, docConfig } from './config.js';
+import { estado, docConfig, enEstacion, checkIdInicial, checkNumInicial, checkGuidInicial, empleadoPosInicial } from './config.js';
 import { toast, showModal } from './utils.js';
 import { validarIdentificacion, getDocCfg, sanitizarDocumento, actualizarAtributosDocumento, initValidation } from './validation.js';
 import { initKeyboard } from './keyboard.js';
-import { sincronizarDesdeAPI, apiCrear, apiActualizar, apiBorrar, apiReactivar } from './api.js';
+import { sincronizarDesdeAPI, apiCrear, apiActualizar, apiBorrar, apiReactivar, apiVincular } from './api.js';
 import { recolectarDatos, validarFormulario, limpiarCampos, cargarEnFormulario, autocompletarPorIdentificacion } from './form.js';
 import { showVista, renderBuscar, renderActualizar } from './views.js';
 
@@ -29,6 +29,102 @@ window.iniciarEdicion = (id)=>{
   if(btnG){ btnG.innerHTML='<span class="icon">💾</span>Guardar Cambios'; btnG.classList.add('accent'); }
   toast('Editando a '+c.nombre+' '+c.apellido+' — modifica y pulsa Guardar Cambios','info');
 };
+
+function activarEstacion(){
+  if(!enEstacion) return;
+  document.body.classList.add('modo-estacion');
+  document.getElementById('bannerEstacion')?.classList.remove('hidden');
+  document.getElementById('checkBadge')?.classList.remove('hidden');
+  document.getElementById('btnUsarEnCuenta')?.classList.remove('hidden');
+  const sub = document.getElementById('headerSub');
+  if(sub) sub.textContent = 'Estación Oracle Simphony Hospitality · vincular check al cliente';
+  document.title = 'Estación Simphony · Clientes';
+  const chk = document.getElementById('checkId');
+  if(chk && checkIdInicial && !chk.value) chk.value = checkIdInicial;
+  if(chk && checkIdInicial){
+    chk.readOnly = true;
+    chk.title = 'Check enviado por Simphony';
+    chk.classList.add('check-readonly');
+  }
+  const banner = document.getElementById('bannerEstacion');
+  if(banner && checkIdInicial){
+    banner.innerHTML = 'Check <strong>' + checkIdInicial + '</strong> enviado por Simphony · busca o crea el cliente y pulsa <strong>Usar en cuenta</strong>.';
+  }
+}
+
+function extraVinculo(){
+  const aliases = [checkNumInicial, checkGuidInicial].filter(x => x && x !== checkIdInicial);
+  const extra = {};
+  if(aliases.length) extra.check_ids = aliases;
+  if(empleadoPosInicial) extra.empleado_pos = empleadoPosInicial;
+  return extra;
+}
+
+function cerrarDialogoPos(payload){
+  const data = payload || {};
+  try {
+    if(window.SimphonyPOSAPI && typeof SimphonyPOSAPI.closeDialog === 'function'){
+      SimphonyPOSAPI.closeDialog(JSON.stringify(data));
+      return;
+    }
+  } catch {}
+  if(window.parent !== window){
+    try { window.parent.postMessage(data, '*'); } catch {}
+  }
+  window.close();
+}
+
+function notificarVinculo(checkId, clienteId, c){
+  const payload = { tipo:'pegarCliente', check_id: checkId, cliente_id: clienteId, cliente: c || null, empleado_pos: empleadoPosInicial || null };
+  const nombre = [c?.nombre, c?.apellido].filter(Boolean).join(' ') || 'Cliente';
+  toast(`✓ ${nombre} vinculado al check ${checkId}`,'success');
+  setTimeout(()=> cerrarDialogoPos(payload), 700);
+}
+
+async function vincularACheck(clienteIdPref){
+  const checkEl = document.getElementById('checkId');
+  const checkId = (checkEl?.value || '').trim();
+  if(!checkId){
+    toast('Escribe el número de check de Simphony','error');
+    checkEl?.focus();
+    return;
+  }
+  if(!estado.usandoAPI){
+    toast('El servidor de la estación no está activo. Ejecuta ESTACION.bat','error');
+    return;
+  }
+  let clienteId = clienteIdPref || estado.editandoId || estado.seleccionadoId;
+  if(!clienteId){
+    if(!validarFormulario(validarFn)) return;
+    const datos = recolectarDatos();
+    const exist = estado.clientes.find(c => c.identificacion === datos.identificacion);
+    if(exist) clienteId = exist.id;
+    else {
+      const res = await apiCrear({...datos, check_id: checkId, ...extraVinculo()});
+      if(!res.ok){ toast(res.error||'No se pudo crear el cliente','error'); return; }
+      clienteId = res.id;
+      await sincronizarDesdeAPI({renderBuscar, renderActualizar});
+      const creado = estado.clientes.find(x => String(x.id)===String(clienteId)) || datos;
+      notificarVinculo(checkId, clienteId, creado);
+      return;
+    }
+  }
+  const res = await apiVincular(checkId, clienteId, extraVinculo());
+  if(!res.ok){ toast(res.error||'No se pudo vincular el check','error'); return; }
+  const c = estado.clientes.find(x => String(x.id)===String(clienteId));
+  notificarVinculo(checkId, clienteId, c);
+}
+
+window.usarClienteEnCuenta = async (id) => {
+  const c = estado.clientes.find(x => String(x.id)===String(id));
+  if(!c){ toast('No se encontró el cliente','error'); return; }
+  estado.seleccionadoId = c.id;
+  estado.editandoId = c.id;
+  window.cargarEnFormulario(c);
+  showVista('form');
+  await vincularACheck(c.id);
+};
+activarEstacion();
 
 // DOM refs
 const identificacion = document.getElementById('identificacion');
@@ -181,8 +277,8 @@ function initBotonesPrincipales(){
       const datosCrear=recolectarDatos();
       if(estado.usandoAPI){
         const res = await apiCrear(datosCrear);
-        if(res.ok){ toast(`✓ Cliente ${datosCrear.nombre} ${datosCrear.apellido} guardado en MySQL (#${res.numCliente})`,'success'); await sincronizarDesdeAPI({renderBuscar, renderActualizar}); }
-        else toast(res.error||'Error al crear en MySQL','error');
+        if(res.ok){ toast(`✓ Cliente ${datosCrear.nombre} ${datosCrear.apellido} guardado (#${res.numCliente})`,'success'); await sincronizarDesdeAPI({renderBuscar, renderActualizar}); }
+        else toast(res.error||'Error al crear el cliente','error');
       } else {
         if(estado.clientes.some(c=>c.identificacion===datosCrear.identificacion)){ toast('Ya existe un cliente con esa identificación — usa otra','error'); break; }
         const nuevo={...datosCrear, id: Date.now(), numCliente: datosCrear.numCliente || String(estado.clientes.length+1).padStart(4,'0'), estado:'activo'};
@@ -227,7 +323,7 @@ function initBotonesPrincipales(){
       const datosG=recolectarDatos();
       if(estado.usandoAPI){
         const res = await apiCrear(datosG);
-        if(res.ok){ toast(`✓ Cliente ${datosG.nombre} ${datosG.apellido} guardado en MySQL (#${res.numCliente})`,'success'); await sincronizarDesdeAPI({renderBuscar, renderActualizar}); }
+        if(res.ok){ toast(`✓ Cliente ${datosG.nombre} ${datosG.apellido} guardado (#${res.numCliente})`,'success'); await sincronizarDesdeAPI({renderBuscar, renderActualizar}); }
         else toast(res.error||'Error','error');
       } else {
         if(estado.clientes.some(c=>c.identificacion===datosG.identificacion)){ toast('Ya existe un cliente con esa identificación','error'); break; }
@@ -238,20 +334,8 @@ function initBotonesPrincipales(){
       }
       break;
     }
-    case 'salir':
-      showModal({
-        title:'¿Salir del sistema?',
-        text:'Se cerrará la sesión actual. Los datos quedan guardados localmente.',
-        confirmText:'Salir',
-        confirmClass:'primary',
-        onConfirm:()=>{
-          toast('Sesión finalizada — ¡hasta pronto!','info');
-          setTimeout(()=>{ const limpiar=limpiarCampos({clienteForm, emailList, identificacion, errorIdentificacion, hintIdentificacion, toast}); limpiar(true); showVista('form'); },600);
-        }
-      });
-      break;
-  }
-  });
+  
+  activarEstacion();
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', initBotonesPrincipales);
 else initBotonesPrincipales();

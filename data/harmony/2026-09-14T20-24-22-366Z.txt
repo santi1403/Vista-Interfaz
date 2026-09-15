@@ -1,0 +1,1 @@
+<FiscalRequest><CheckNumber>HPL000019389</CheckNumber></FiscalRequest>

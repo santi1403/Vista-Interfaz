@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+    <AssemblyName>GestionClientes</AssemblyName>
+    <RootNamespace>GestionClientes</RootNamespace>
+    <OutputType>Library</OutputType>
+    <LangVersion>5</LangVersion>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="url.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net462" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Ops">
+      <HintPath>refs\Ops.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="PosCore">
+      <HintPath>refs\PosCore.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="PosCommonClasses">
+      <HintPath>refs\PosCommonClasses.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

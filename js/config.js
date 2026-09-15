@@ -11,15 +11,22 @@ export const docConfig = {
 };
 
 export const API_URL = (() => {
-  // Si se abre como file:// (Visual Studio preview) usar la IP del servidor para que comparta la misma BD MySQL que las paginas http
-  if (location.protocol === 'file:') return 'http://192.168.10.129:8000/api/api.php';
+  if (location.protocol === 'file:') return 'http://127.0.0.1:8000/api/api.php';
   return 'api/api.php';
 })();
 export const porPagina = 5;
 
+const qs = new URLSearchParams(location.search);
+export const enEstacion = qs.get('pos') !== '0';
+export const checkIdInicial = (qs.get('check') || qs.get('check_id') || '').trim();
+export const checkNumInicial = (qs.get('check_num') || '').trim();
+export const checkGuidInicial = (qs.get('guid') || '').trim();
+export const empleadoPosInicial = (qs.get('emp') || '').trim();
+
 // Estado global (compartido)
 export let estado = {
   usandoAPI: false,
+  enEstacion,
   currentPage: 1,
   paginaBuscar: 1,
   paginaActualizar: 1,

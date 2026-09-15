@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Asignar cliente</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #0f172a; overflow: hidden; }
+    iframe { border: 0; width: 100%; height: 100%; display: block; }
+  </style>
+</head>
+<body>
+  <!-- Referencia: el JS de Extensibility genera este HTML con la URL del check.
+       No hace falta pegar este archivo en EMC si usas asignarCliente.js -->
+  <iframe id="app" src="http://127.0.0.1:8000/index.html?pos=1"></iframe>
+  <script>
+    window.addEventListener('message', function (ev) {
+      var d = ev.data || {};
+      if (d.tipo === 'pegarCliente' || d.tipo === 'cerrarClientes') {
+        try {
+          if (window.SimphonyPOSAPI) SimphonyPOSAPI.closeDialog(JSON.stringify(d));
+        } catch (e) {}
+      }
+    });
+  </script>
+</body>
+</html>

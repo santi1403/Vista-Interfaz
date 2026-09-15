@@ -55,7 +55,10 @@ function renderBuscar(){
       <td>${c.telefono||'—'}</td>
       <td>${c.pais||'—'}</td>
       <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(c.emails||[]).join(', ')}">${(c.emails||[])[0]||'—'} ${(c.emails||[]).length>1?` <span style="color:var(--accent)">+${c.emails.length-1}</span>`:''}</td>
-      <td><div class="actions-cell"><button class="btn-mini primary" onclick="window.cargarEnFormulario && window.cargarEnFormulario(window._estado.clientes.find(x=>x.id==${c.id}))">👁 Ver</button></div></td>
+      <td><div class="actions-cell">
+        <button class="btn-mini primary" onclick="window.cargarEnFormulario && window.cargarEnFormulario(window._estado.clientes.find(x=>x.id==${c.id}))">👁 Ver</button>
+        ${window._estado?.enEstacion ? `<button class="btn-mini accent" onclick="window.usarClienteEnCuenta && window.usarClienteEnCuenta(${c.id})">🧾 Usar</button>` : ''}
+      </div></td>
     </tr>
   `).join('');
 }

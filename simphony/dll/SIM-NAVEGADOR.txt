@@ -1,0 +1,44 @@
+SIM que abre el navegador (sin DLL ni JavaScript)
+=================================================
+
+El inquire 10 arma la URL y abre el navegador con shell32 / ShellExecute
+(DLLLoad + DLLCall_STDCall del apendice D del manual SIM).
+system / winexec / osexecute no aplican en esta caja.
+
+Concatenar textos: usa &&
+Check: @CKNUM
+Lanzar: system linea
+
+La app en EMC se llama "cliente": el boton es Sim Inquire  cliente:10
+
+En EMC borra TODO el Main SIM y pega solo este archivo (sin lineas viejas).
+
+1) EMC — Extension Application GestionClientes
+   Host Type de la app:  0 - None
+
+   Content (puede ser SOLO este):
+     Disk File Name:  GestionClientes.isl
+     Importa:         simphony\dll\GestionClientes.isl
+     Host Type:       0 - None
+     Option:          Main SIM Content  MARCADO
+
+   Quita o desactiva JavaScript y, para esta prueba, el DLL.
+   (Si el DLL sigue y no es Main SIM, no deberia molestar; el boton usa el :10.)
+
+2) Boton (igual que Datos de Cliente)
+   Function:    Sim Inquire
+   Arguments:   cliente:10
+                (o GestionClientes:10 si ese es el Name en EMC)
+
+3) Reload Database + CAL + cerrar ServiceHost
+   ESTACION.bat encendido
+   Check ABIERTO → pulsar el boton
+
+4) Debe abrirse el navegador en:
+   http://127.0.0.1:8000/index.html?pos=1&check=NUMERO
+
+Si el check en la URL sale 0 o vacio:
+  el SIM no leyo @CKNUM; avisa y ajustamos la variable.
+
+Si sale Undefined Function / Unknown Command en system:
+  esta version 19.7 ya no trae System; hay que usar el DLL.

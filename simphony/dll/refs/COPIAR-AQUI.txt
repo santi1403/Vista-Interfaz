@@ -1,0 +1,10 @@
+Copia aqui, desde la ESTACION Simphony (misma version que el POS):
+
+  wwwroot\EGateway\Handlers\Ops.dll
+  wwwroot\EGateway\Handlers\PosCore.dll
+  wwwroot\EGateway\Handlers\PosCommonClasses.dll
+
+Ruta tipica:
+  C:\Micros\Simphony2\WebServer\wwwroot\EGateway\Handlers\
+
+Copy Local = false: estas DLL no se empaquetan; solo sirven para COMPILAR.

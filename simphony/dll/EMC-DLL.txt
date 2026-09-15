@@ -1,0 +1,81 @@
+DLL GestionClientes — Simphony Extensibility (.NET)
+====================================================
+
+Esto sustituye el JavaScript. El POS carga GestionClientes.dll
+y el metodo asignarCliente abre la app web con el check.
+
+1) COMPILAR (en un PC con Visual Studio o dotnet SDK)
+-----------------------------------------------------
+1. En la ESTACION, copia a simphony\dll\refs\ estas 3 DLL
+   (misma version que el POS):
+
+   C:\Micros\Simphony2\WebServer\wwwroot\EGateway\Handlers\Ops.dll
+   C:\Micros\Simphony2\WebServer\wwwroot\EGateway\Handlers\PosCore.dll
+   C:\Micros\Simphony2\WebServer\wwwroot\EGateway\Handlers\PosCommonClasses.dll
+
+   (La carpeta puede ser Simphony en vez de Simphony2.)
+
+2. PowerShell:
+
+   cd "simphony\dll"
+   powershell -ExecutionPolicy Bypass -File .\compilar.ps1
+
+3. Sale: simphony\dll\bin\Release\GestionClientes.dll
+   Junto a url.txt (URL de la app; por defecto http://127.0.0.1:8000)
+
+
+2) EMC — Extension Application
+------------------------------
+Usa la app que YA se llama GestionClientes (o creala).
+
+- Name: GestionClientes
+- Host Type de la APLICACION: OPS
+- QUITA o deja de usar el content JavaScript (asignarCliente.js)
+  para que no compita con el DLL.
+
+Insert Application Content:
+- Content Type: DLL / Binary (no Javascript)
+- Disk File Name: GestionClientes.dll
+- Importa el archivo GestionClientes.dll
+- Host Type del CONTENT: OPS
+- NO marques "Main SIM Content" (eso es para SIM/JS)
+- Option: que SI cargue el DLL (no marques "Do not load DLL")
+
+Guarda. Si usas CAL Packages: Export to Package y mete el paquete
+en el CAL de la workstation (igual que Harmonized).
+
+
+3) BOTON Page Design — igual que "Datos de Cliente"
+---------------------------------------------------
+AppClientes funciona asi:
+  Function:   Sim Inquire
+  Arguments:  AppClientes:10
+
+El :10 es un inquire SIM, no un metodo C#.
+
+Pon exactamente:
+  Function:   Sim Inquire
+  Arguments:  GestionClientes:10
+
+Y en EMC, GestionClientes debe tener DLL + .isl Main SIM,
+Host Type None, como AppClientes. Ver COMO-APPCLIENTES.txt
+
+
+
+4) ESTACION
+-----------
+- ESTACION.bat / node server.js en marcha (puerto 8000)
+- Reload Database + CAL Update + reiniciar ServiceHost
+- Debe existir carpeta:
+  ...\Handlers\ExtensionApplications\GestionClientes\
+  con GestionClientes.dll (y opcional url.txt)
+
+Si la app NO esta en la misma PC:
+  edita url.txt a http://IP-DEL-SERVIDOR:8000
+  y copialo junto al DLL.
+
+
+5) PRUEBA
+---------
+Check abierto → Asignar Clientes → se abre el formulario
+con el check ya puesto → Usar en cuenta.

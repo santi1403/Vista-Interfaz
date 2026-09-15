@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestión de Clientes - Prototipo</title>
+<title>Estación Simphony · Clientes</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css?v=nopag">
 </head>
@@ -14,12 +14,21 @@
   <div class="card-header">
     <div class="header-left">
       <h1>Registro y Gestión de Clientes</h1>
-      <p>Panel centralizado · Interfaz corporativa minimalista</p>
+      <p id="headerSub">Panel centralizado · Interfaz corporativa minimalista</p>
     </div>
-    <div class="cliente-badge">
-      <label for="numCliente"># Cliente</label>
-      <input type="text" id="numCliente" placeholder="0001" maxlength="10" inputmode="numeric">
+    <div class="header-right">
+      <div class="check-badge hidden" id="checkBadge">
+        <label for="checkId">Check Simphony</label>
+        <input type="text" id="checkId" placeholder="HPL000019389" maxlength="50" autocomplete="off">
+      </div>
+      <div class="cliente-badge">
+        <label for="numCliente"># Cliente</label>
+        <input type="text" id="numCliente" placeholder="0001" maxlength="10" inputmode="numeric">
+      </div>
     </div>
+  </div>
+  <div id="bannerEstacion" class="banner-estacion hidden">
+    Estación Simphony · busca o crea el cliente y pulsa <strong>Usar en cuenta</strong>. Sin vínculo la factura sale como consumidor final.
   </div>
 
   <!-- BODY ORIGINAL INTACTO -->
@@ -102,7 +111,9 @@
         <button class="btn-action" data-action="actualizar"><span class="icon">↻</span>Actualizar Cliente</button>
         <button class="btn-action" data-action="limpiar"><span class="icon">🧹</span>Limpiar Campos</button>
         <button class="btn-action accent" data-action="crear"><span class="icon">＋</span>Crear Cliente</button>
-        <button class="btn-action danger" data-action="borrar"><span class="icon">🗑</span>Delete</button>        <button class="btn-action" data-action="guardar"><span class="icon">💾</span>Guardar</button>
+        <button class="btn-action danger" data-action="borrar"><span class="icon">🗑</span>Delete</button>
+        <button class="btn-action" data-action="guardar"><span class="icon">💾</span>Guardar</button>
+        <button class="btn-action primary hidden" data-action="usarEnCuenta" id="btnUsarEnCuenta"><span class="icon">🧾</span>Usar en cuenta</button>
         <button class="btn-action" data-action="salir"><span class="icon">⎋</span>Salir</button>
       </div>
       <button class="btn-zoom" id="btnZoom">⤢ Zoom Pantalla</button>
