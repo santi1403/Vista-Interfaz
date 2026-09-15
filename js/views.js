@@ -1,4 +1,5 @@
 // js/views.js - Vistas y tablas (SIN MÓDULOS, FUNCIONA EN LOCALHOST)
+import { esc } from './utils.js';
 const porPagina = 5;
 
 function getFiltered(){
@@ -40,7 +41,7 @@ function renderBuscar(){
   const slice=filtered.slice(start,start+5);
   const pageEl=document.getElementById('buscarPage');
   const infoEl=document.getElementById('buscarInfo');
-  if(pageEl) pageEl.textContent=1;
+  if(pageEl) pageEl.textContent=window._estado.paginaBuscar;
   if(infoEl) infoEl.textContent=`${filtered.length} resultados · ${window._estado?.clientes?.length||0} totales`;
   if(slice.length===0){
     tbody.innerHTML=`<tr><td colspan="8"><div class="empty-state"><div class="big">🔍</div><strong>Sin resultados</strong><br>Prueba con otro nombre o identificación</div></td></tr>`;
@@ -48,6 +49,7 @@ function renderBuscar(){
   }
   tbody.innerHTML=slice.map((c,i)=>`
     <tr class="${c.id===window._estado?.seleccionadoId?'selected':''}">
+<<<<<<< HEAD
       <td><strong>#${String(c.numCliente||'0000').padStart(4,'0')}</strong></td>
       <td><strong>${c.nombre} ${c.apellido}</strong> <span class="badge ${c.estado==='suspendido'?'suspendido':'activo'}">${c.estado==='suspendido'?'⊘ Suspendido':'✓ Activo'}</span><br><span style="color:var(--muted);font-size:11px">${c.direccion||'—'}</span></td>
       <td><span class="badge">${c.identificacion}</span></td>
@@ -59,6 +61,16 @@ function renderBuscar(){
         <button class="btn-mini primary" onclick="window.cargarEnFormulario && window.cargarEnFormulario(window._estado.clientes.find(x=>x.id==${c.id}))">👁 Ver</button>
         ${window._estado?.enEstacion ? `<button class="btn-mini accent" onclick="window.usarClienteEnCuenta && window.usarClienteEnCuenta(${c.id})">🧾 Usar</button>` : ''}
       </div></td>
+=======
+      <td><strong>#${esc(c.numCliente||'0000').padStart(4,'0')}</strong></td>
+      <td><strong>${esc(c.nombre)} ${esc(c.apellido)}</strong> <span class="badge ${c.estado==='suspendido'?'suspendido':'activo'}">${c.estado==='suspendido'?'⊘ Suspendido':'✓ Activo'}</span><br><span style="color:var(--muted);font-size:11px">${esc(c.direccion)||'—'}</span></td>
+      <td><span class="badge">${esc(c.identificacion)}</span></td>
+      <td><span class="badge ${c.tipoCliente==='NIT'?'juridica':c.tipoCliente==='CC'||c.tipoCliente==='CE'?'vip':''}">${esc(c.tipoCliente)||'—'}</span></td>
+      <td>${esc(c.telefono)||'—'}</td>
+      <td>${esc(c.pais)||'—'}</td>
+      <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc((c.emails||[]).join(', '))}">${esc((c.emails||[])[0])||'—'} ${(c.emails||[]).length>1?` <span style="color:var(--accent)">+${esc(c.emails.length-1)}</span>`:''}</td>
+      <td><div class="actions-cell"><button class="btn-mini primary" onclick="window.cargarEnFormulario && window.cargarEnFormulario(window._estado.clientes.find(x=>x.id==${c.id}))">👁 Ver</button></div></td>
+>>>>>>> 29d9e492743a1b014ba48207dfe3aafbb0225d90
     </tr>
   `).join('');
 }
@@ -69,7 +81,7 @@ function renderActualizar(){
   const clientes=window._estado?.clientes||[];
   const pageEl=document.getElementById('actualizarPage');
   const infoEl=document.getElementById('actualizarInfo');
-  if(pageEl) pageEl.textContent=1;
+  if(pageEl) pageEl.textContent=window._estado.paginaActualizar;
   if(infoEl) infoEl.textContent=`${clientes.length} clientes`;
   if(clientes.length===0){
     tbody.innerHTML=`<tr><td colspan="6"><div class="empty-state"><div class="big">📋</div>No hay clientes aún. Crea uno con el formulario.</div></td></tr>`;
@@ -77,11 +89,11 @@ function renderActualizar(){
   }
   tbody.innerHTML=clientes.map(c=>`
     <tr class="${c.id===window._estado?.editandoId?'selected':''}" data-id="${c.id}">
-      <td><strong>${c.numCliente||'—'}</strong></td>
-      <td><strong>${c.nombre} ${c.apellido}</strong> <span class="badge ${c.estado==='suspendido'?'suspendido':'activo'}">${c.estado==='suspendido'?'Suspendido':'Activo'}</span><br><span style="font-size:11px;color:var(--muted)">${c.identificacion}</span></td>
-      <td><span class="badge">${c.identificacion}</span></td>
-      <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.direccion||'—'}</td>
-      <td>${c.pais||'—'}</td>
+      <td><strong>${esc(c.numCliente)||'—'}</strong></td>
+      <td><strong>${esc(c.nombre)} ${esc(c.apellido)}</strong> <span class="badge ${c.estado==='suspendido'?'suspendido':'activo'}">${c.estado==='suspendido'?'Suspendido':'Activo'}</span><br><span style="font-size:11px;color:var(--muted)">${esc(c.identificacion)}</span></td>
+      <td><span class="badge">${esc(c.identificacion)}</span></td>
+      <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.direccion)||'—'}</td>
+      <td>${esc(c.pais)||'—'}</td>
       <td><div class="actions-cell">
         <button class="btn-mini primary btn-edit" data-id="${c.id}">✎ Editar</button>
         <button class="btn-mini danger btn-delete" data-id="${c.id}">🗑 Eliminar</button>
@@ -113,21 +125,42 @@ function editarCliente(id){
   if(window.toast) window.toast('Editando a '+c.nombre+' '+c.apellido+' — modifica y pulsa Guardar Cambios','info');
 }
 
-function eliminarCliente(id){
+function confirmarBorrar(id){
   const c = (window._estado?.clientes || []).find(x => String(x.id) === String(id));
   if(!c){ window.toast?.('No se encontró el cliente', 'error'); return; }
-  if(!confirm(`¿Eliminar a ${c.nombre} ${c.apellido} (${c.identificacion})?`)) return;
-  fetch(`/api/api.php?id=${id}`, {method:'DELETE'})
-    .then(r=>r.json())
-    .then(r=>{
-      if(r.ok){ window.toast?.('Eliminado','success'); location.reload(); }
-      else alert(r.error || 'Error al eliminar');
-    })
-    .catch(()=>alert('Error de conexión'));
+  if(!window.showModal){ eliminarCliente(id); return; }
+  window.showModal({
+    title:'¿Eliminar cliente?',
+    text:`Se eliminará a ${c.nombre} ${c.apellido} (${c.identificacion}). Esta acción no se puede deshacer.`,
+    confirmText:'Eliminar',
+    confirmClass:'danger',
+    onConfirm: async ()=>{
+      if(window._estado?.usandoAPI){
+        const res = await window.apiBorrar(c.id);
+        if(res.ok){ window.toast?.('✓ Cliente eliminado','success'); location.reload(); }
+        else window.toast?.(res.error||'Error al eliminar','error');
+      } else {
+        window._estado.clientes = window._estado.clientes.filter(x => String(x.id) !== String(id));
+        localStorage.setItem('clientes_proto', JSON.stringify(window._estado.clientes));
+        if(window._estado.seleccionadoId!==null && String(window._estado.seleccionadoId)===String(id)){
+          window._estado.seleccionadoId=null;
+          localStorage.setItem('seleccionado_proto', JSON.stringify(null));
+        }
+        const cc=document.getElementById('clientCount'); if(cc) cc.textContent=window._estado.clientes.length;
+        renderBuscar(); renderActualizar();
+        window.toast?.('✓ Cliente eliminado','success');
+      }
+    }
+  });
+}
+
+function eliminarCliente(id){
+  confirmarBorrar(id);
 }
 
 // Exponer a window para acceso global y debug
 window.editarCliente = editarCliente;
 window.eliminarCliente = eliminarCliente;
+window.confirmarBorrar = confirmarBorrar;
 
 export { showVista, renderBuscar, renderActualizar };

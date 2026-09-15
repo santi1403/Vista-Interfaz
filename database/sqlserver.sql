@@ -46,15 +46,13 @@ CREATE TABLE factura_cliente (
 );
 GO
 
--- Datos demo
-IF NOT EXISTS (SELECT 1 FROM clientes WHERE identificacion='0102030405')
-INSERT INTO clientes (num_cliente,tipo_id,identificacion,nombre,apellido,direccion,telefono,pais,fecha_desde,fecha_nacimiento) VALUES
-('0001','CC','0102030405','María','González','Av. Amazonas 123','0991234567','Ecuador','2024-01-15','1990-05-20'),
-('0002','CE','1723456789','Carlos','Ruiz','Calle 10 # 20-30','0987654321','Colombia','2023-11-02','1985-09-10'),
-('0003','NIT','0933445566','Empresa','Soluciones SA','Parque Empresarial','022345678','Perú','2022-06-01','2000-01-01');
-GO
-IF NOT EXISTS (SELECT 1 FROM cliente_emails WHERE email='maria.gonzalez@mail.com')
-INSERT INTO cliente_emails (cliente_id,email) VALUES (1,'maria.gonzalez@mail.com'),(2,'carlos.ruiz@mail.com'),(2,'c.ruiz@empresa.com'),(3,'contacto@soluciones.pe');
-GO
-
+-- Ver clientes registrados (los datos se gestionan desde la interfaz/API)
 SELECT * FROM clientes;
+
+-- Ver clientes con sus correos
+SELECT c.id, c.num_cliente, c.tipo_id, c.identificacion, c.nombre, c.apellido, c.pais, c.estado,
+       STRING_AGG(e.email, ', ') AS emails
+FROM clientes c
+LEFT JOIN cliente_emails e ON e.cliente_id = c.id
+GROUP BY c.id, c.num_cliente, c.tipo_id, c.identificacion, c.nombre, c.apellido, c.pais, c.estado
+ORDER BY c.id;

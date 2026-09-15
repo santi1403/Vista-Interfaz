@@ -1,11 +1,16 @@
 // js/utils.js - Toast y Modal (helpers UI)
+export function esc(s){
+  return String(s==null?'':s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
 export function toast(msg, type='info'){
   const c = document.getElementById('toastContainer');
   if(!c) return;
   const t = document.createElement('div');
   t.className=`toast ${type}`;
   const icons={success:'✓',error:'✕',info:'ℹ'};
-  t.innerHTML=`<span>${icons[type]||'ℹ'}</span><span>${msg}</span>`;
+  t.innerHTML=`<span>${icons[type]||'ℹ'}</span><span>${esc(msg)}</span>`;
   c.appendChild(t);
   setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(20px)'; setTimeout(()=>t.remove(),250)},2800);
 }

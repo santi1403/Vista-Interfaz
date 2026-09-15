@@ -2,10 +2,10 @@
   "name": "interfaz-2",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "server-sql.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server-sql.js"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +13,11 @@
   "type": "commonjs",
   "dependencies": {
     "electron": "^44.1.1",
+    "msnodesqlv8": "^5.5.0",
     "mssql": "^12.7.2",
     "mysql2": "^3.24.2"
+  },
+  "allowScripts": {
+    "msnodesqlv8@5.5.0": true
   }
 }

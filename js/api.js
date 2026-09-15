@@ -1,4 +1,4 @@
-// js/api.js - Comunicación con MySQL (api.php / server.js)
+// js/api.js - Comunicación con SQL Server (server-sql.js / api PHP legacy)
 import { API_URL, estado } from './config.js';
 import { toast } from './utils.js';
 
@@ -52,8 +52,14 @@ export async function sincronizarDesdeAPI(renderers){
       // renderSeleccionar ya no existe, pero por compatibilidad
       if(renderers.renderSeleccionar) renderers.renderSeleccionar();
     }
+<<<<<<< HEAD
     toast('Estación conectada — clientes cargados','success');
   } else {
     toast('Sin API — inicia ESTACION.bat','info');
+=======
+    toast('Conectado a SQL Server — datos reales cargados','success');
+  } else {
+    toast('Modo local (sin servidor) — inicia node server-sql.js para guardar en SQL Server','info');
+>>>>>>> 29d9e492743a1b014ba48207dfe3aafbb0225d90
   }
 }
